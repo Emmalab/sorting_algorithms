@@ -1,108 +1,113 @@
 #include "sort.h"
 
 /**
- * cocktail_sort_list - sorts a double linked list by bubblesort
- * @list: a doubly linked list to sort
+ * swap - Swaps two nodes in a doubly linked list.
+ * @list: A pointer to the head of the linked list.
+ * @l: The left item to swap.
+ * @r: The right item to swap.
+ */
+void swap(listint_t **list, listint_t *l, listint_t *r)
+{
+	listint_t *tmp0 = NULL, *tmp1 = NULL, *tmp2 = NULL, *tmp3 = NULL;
+
+	if ((l == NULL) || (r == NULL) || (list == NULL) || (l == r))
+		return;
+	tmp0 = l->prev, tmp1 = l->next, tmp2 = r->prev, tmp3 = r->next;
+	if (l->prev == r)
+	{
+		l->next = r, l->prev = tmp2, r->next = tmp1, r->prev = l;
+		if (tmp2 != NULL)
+			tmp2->next = l;
+		if (tmp1 != NULL)
+			tmp1->prev = r;
+	}
+	else if (l->next == r)
+	{
+		l->next = tmp3, l->prev = r, r->next = l, r->prev = tmp0;
+		if (tmp0 != NULL)
+			tmp0->next = r;
+		if (tmp3 != NULL)
+			tmp3->prev = l;
+	}
+	else
+	{
+		l->next = tmp3, l->prev = tmp2, r->next = tmp1, r->prev = tmp0;
+		if (tmp0 != NULL)
+			tmp0->next = r;
+		if (tmp1 != NULL)
+			tmp1->prev = r;
+		if (tmp2 != NULL)
+			tmp2->next = l;
+		if (tmp3 != NULL)
+			tmp3->prev = l;
+	}
+	if (l->prev == NULL)
+		*list = l;
+	if (r->prev == NULL)
+		*list = r;
+}
+
+/**
+ * get_tail - Retrieves the tail node of a doubly linked list.
+ * @list: A pointer to the head of the linked list.
  *
- * Return: nothing
+ * Return: The tail of the linked list, otherwise NULL.
+ */
+listint_t *get_tail(listint_t **list)
+{
+	listint_t *node = NULL;
+
+	if (list != NULL)
+	{
+		node = *list;
+		while ((node != NULL) && (node->next != NULL))
+			node = node->next;
+	}
+	return (node);
+}
+
+/**
+ * cocktail_sort_list - Sorts a doubly linked list
+ * using the cocktail shaker sort algorithm.
+ * @list: The list to be sorted.
  */
 void cocktail_sort_list(listint_t **list)
 {
-	listint_t *temp = *list;
-	int st = 0, size, bound = 0, limit = 0;
+	char swapped = FALSE;
+	listint_t *node = NULL, *next = NULL, *tmp;
 
-	if (temp != NULL && temp->next != NULL)
-	{
-		for (size = 0; temp; size++)
-			temp = temp->next;
-		temp = *list;
-		while (st == 0)
+	if (list == NULL)
+		return;
+	do {
+		node = *list;
+		next = (node == NULL ? NULL : node->next);
+		swapped = FALSE;
+		while ((node != NULL) && (next != NULL))
 		{
-			while (temp->next && (size - limit) - bound != 1)
+			tmp = next;
+			if (node->n > next->n)
 			{
-				if (temp->n > temp->next->n)
-				{
-					swap_nodes(list, &temp->next);
-					print_list(*list);
-				}
-				else
-					temp = temp->next;
-				limit += 1;
+				swap(list, node, next);
+				swapped = TRUE;
+				print_list(*list);
 			}
-			while (temp->prev && limit - bound != 0)
-			{
-				if (temp->n < temp->prev->n)
-				{
-					swap_nodes(list, &temp);
-					print_list(*list);
-				}
-				else
-					temp = temp->prev;
-				limit -= 1;
-			}
-			bound += 1;
-			st = sorted(list);
+			node = tmp, next = (node == NULL ? NULL : node->next);
 		}
-	}
-}
-
-/**
- * swap_nodes - swaps a node with the previous one
- * @list: the original list
- * @n: pointer to the node to swap
- * Return: nothing
- */
-void swap_nodes(listint_t **list, listint_t **n)
-{
-	listint_t *one = NULL, *four = NULL, *ptr = *n;
-	listint_t *temp = *list;
-
-	while (temp)
-	{
-		if (temp->next == ptr)
-		{
-			if (temp->prev)
-			{
-				one = temp->prev;
-				one->next = ptr;
-				ptr->prev = one;
-			}
-			else
-			{
-				ptr->prev = NULL;
-				*list = ptr;
-			}
-			if (ptr->next)
-			{
-				four = ptr->next;
-				temp->next = four;
-				four->prev = temp;
-			}
-			else
-				temp->next = NULL;
-
-			ptr->next = temp;
-			temp->prev = ptr;
+		if (!swapped)
 			break;
+		swapped = FALSE;
+		next = get_tail(list);
+		node = next == NULL ? NULL : next->prev;
+		while ((node != NULL) && (next != NULL))
+		{
+			tmp = node;
+			if (node->n > next->n)
+			{
+				swap(list, node, next);
+				swapped = TRUE;
+				print_list(*list);
+			}
+			next = tmp, node = next == NULL ? NULL : next->prev;
 		}
-		temp = temp->next;
-	}
-}
-
-/**
- * sorted - checks if a linked list is sorted
- * @list: to check
- * Return: 0 if not sorted, 1 if sorted
- */
-int sorted(listint_t **list)
-{
-	listint_t *temp = *list;
-
-	while (temp->next)
-	{
-		if (temp->n > temp->next->n)
-			return (0);
-		temp = temp->next;
-	}
-	return (1);
+	} while (swapped);
 }

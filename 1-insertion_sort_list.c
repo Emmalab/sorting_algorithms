@@ -1,107 +1,46 @@
 #include "sort.h"
+/**
+ * swap_node - Swap two nodes in a listint_t doubly-linked list.
+ * @h: A pointer to the head of the doubly-linked list.
+ * @n1: A pointer to the first node to swap.
+ * @n2: The second node to swap.
+ */
+void swap_node(listint_t **h, listint_t **n1, listint_t *n2)
+{
+	(*n1)->next = n2->next;
+	if (n2->next != NULL)
+		n2->next->prev = *n1;
+	n2->prev = (*n1)->prev;
+	n2->next = *n1;
+	if ((*n1)->prev != NULL)
+		(*n1)->prev->next = n2;
+	else
+		*h = n2;
+	(*n1)->prev = n2;
+	*n1 = n2->prev;
+}
 
 /**
- * insertion_sort_list - sorts a doublt linked
- * list using Insertion Sort algorithm
- * @list: pointer to the list of integers to be sorted
- * Return: void
+ * insertion_sort_list- a function that sorts
+ * a doubly linked list using insertion
+ * @list: pointer to the head node
+ * Return: sorted doubly linked list
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *ptr, *curr;
+	listint_t *i, *insert, *temp;
 
-	if (*list == NULL || (*list)->next == NULL || (*list)->next->next == NULL)
+	if (list == NULL || *list == NULL || (*list)->next == NULL)
 		return;
-	ptr = *list;
-	curr = ptr->next;
-	while (1)
+
+	for (i = (*list)->next; i != NULL; i = temp)
 	{
-		if (ptr->n > curr->n)
+		temp = i->next;
+		insert = i->prev;
+		while (insert != NULL && i->n < insert->n)
 		{
-			if (ptr->prev == NULL)
-			{
-				printf("Beginning\n");
-				*list = swap_at_beg(ptr, curr);
-			}
-			else if (curr->next == NULL)
-			{
-				printf("End\n");
-				swap_at_end(ptr, curr);
-			}
-			else
-			{
-				printf("Middle\n");
-				swap_at_middle(ptr, curr);
-			}
-			print_list(*list);
-			ptr = *list;
-			curr = ptr->next;
-		}
-		else
-		{
-			ptr = curr;
-			if (curr->next != NULL)
-				curr = curr->next;
-			else
-				break;
+			swap_node(list, &insert, i);
+			print_list((const listint_t *)*list);
 		}
 	}
-}
-
-/**
- * swap_at_beg - swaps two nodes at the beginning of a linked list
- * @node1: first node
- * @node2: second node
- * Return: void
- */
-listint_t *swap_at_beg(listint_t *node1, listint_t *node2)
-{
-	listint_t *ptr;
-
-	ptr = node2->next;
-	ptr->prev = node1;
-	node1->next = ptr;
-	node2->next = node1;
-	node2->prev = NULL;
-	return (node2);
-}
-
-/**
- * swap_at_end - swaps two nodes at the end of a
- * linked list
- * @node1: first node
- * @node2: second node
- * Return: void
- */
-void swap_at_end(listint_t *node1, listint_t *node2)
-{
-	listint_t *ptr;
-
-	ptr = node1->prev;
-	ptr->next = node2;
-	node2->prev = ptr;
-	node2->next = node1;
-	node1->prev = node2;
-	node1->next = NULL;
-}
-
-/**
- * swap_at_middle - swaps two nodes at the middle of a
- * linked list
- * @node1: first node
- * @node2: second node
- * Return: void
- */
-void swap_at_middle(listint_t *node1, listint_t *node2)
-{
-	listint_t *back, *forw;
-
-	back = node1->prev;
-	forw = node2->next;
-	back->next = node2;
-	node2->prev = back;
-	node2->next = node1;
-	node1->prev = node2;
-	node1->next = forw;
-	forw->prev = node1;
 }

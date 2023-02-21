@@ -1,47 +1,47 @@
 #include "sort.h"
 
 /**
- * counting_sort - sorts an array using the counting sort algorithm
- * @array: to be sorted and its
- * @size: of all elements
- * Return: nothing
+ * counting_sort - Sorts an array using the counting sort algorithm.
+ * @array: The array to sort.
+ * @size: The length of the array.
  */
 void counting_sort(int *array, size_t size)
 {
-	int n, i;
-	int *buff, *a;
+	int *count_arr = NULL, *array_sorted = NULL, max_val = 0;
+	size_t i;
 
-	if (size < 2)
+	if ((array == NULL) || (size < 2))
 		return;
-	for (n = i = 0; i < (int)size; i++)
-		if (array[i] > n)
-			n = array[i];
-	buff = malloc(sizeof(int) * (n + 1));
-	if (!buff)
-		return;
-
-	for (i = 0; i <= n; i++)
-		buff[i] = 0;
-	for (i = 0; i < (int)size; i++)
-		buff[array[i]] += 1;
-	for (i = 1; i <= n; i++)
-		buff[i] += buff[i - 1];
-	print_array(buff, (n + 1));
-	a = malloc(sizeof(int) * (size + 1));
-
-	if (!a)
+	for (i = 0; i < size; i++)
 	{
-		free(buff);
+		max_val = (array[i] > max_val ? array[i] : max_val);
+		if (array[i] < 0)
+			return;
+	}
+	count_arr = malloc(sizeof(int) * (max_val + 1));
+	if (count_arr == NULL)
+		return;
+	array_sorted = malloc(sizeof(int) * size);
+	if (array_sorted == NULL)
+	{
+		free(count_arr);
 		return;
 	}
-	for (i = 0; i < (int)size; i++)
+	for (i = 0; i < (size_t)(max_val + 1); i++)
+		count_arr[i] = 0;
+	for (i = 0; i < size; i++)
+		count_arr[array[i]]++;
+	for (i = 1; i < (size_t)(max_val + 1); i++)
+		count_arr[i] += count_arr[i - 1];
+	print_array(count_arr, max_val + 1);
+	for (i = size - 1; ; i--)
 	{
-		a[buff[array[i]] - 1] = array[i];
-		buff[array[i]] -= 1;
+		count_arr[array[i]]--;
+		array_sorted[count_arr[array[i]]] = array[i];
+		if (i == 0)
+			break;
 	}
-	for (i = 0; i < (int)size; i++)
-		array[i] = a[i];
-
-	free(buff);
-	free(a);
+	for (i = 0; i < size; i++)
+		array[i] = array_sorted[i];
+	free(array_sorted), free(count_arr);
 }

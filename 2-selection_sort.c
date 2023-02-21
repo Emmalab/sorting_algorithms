@@ -1,47 +1,46 @@
 #include "sort.h"
-
 /**
- * selection_sort - sorts an array of integers using the Selection sort algorithm
- * @array: pointer to the array of integers
- * @size: size of the array
- * Return: void
+ * swap- Swaps two items in an array.
+ * @array: The array to modify.
+ * @l: The index of the left item.
+ * @r: The index of the right item.
  */
-void selection_sort(int *array, size_t size)
+void swap(int *array, size_t l, size_t r)
 {
-	int *least = NULL, check_swap;
-	size_t i, j;
+	int temp;
 
-	if (size <= 2)
-		return;
-	for (i = 0; i < size; i++)
+	if (array != NULL)
 	{
-		check_swap = 0;
-		least = &array[i];
-		for (j = i + 1; j < size; j++)
-		{
-			if (*least > array[j])
-			{
-				least = &array[j];
-				check_swap = 1;
-			}
-		}
-		swap(least, &array[i]);
-		if (check_swap)
-			print_array(array, size);
+		temp = array[l];
+		array[l] = array[r];
+		array[r] = temp;
 	}
 }
 
 /**
- * swap - swaps two integers in an array
- * @a: first integer
- * @b: second integer
- * Return: void
+ * selection_sort- a function that sorts an array using selection sort
+ * @array: the array to be sorted
+ * @size: the size of the array
+ * Return: sorted array
  */
-
-void swap(int *a, int *b)
+void selection_sort(int *array, size_t size)
 {
-        int temp = *a;
+	size_t i, j, min_idx;
 
-        *a = *b;
-        *b = temp;
+	for (i = 0; i < size - 1; i++)
+	{
+		min_idx = i;
+		for (j = i + 1; j < size; j++)
+		{
+			if (array[j] < array[min_idx])
+			{
+				min_idx = j;
+			}
+		}
+		if (i != min_idx)
+		{
+			swap(array, i, min_idx);
+			print_array(array, size);
+		}
+	}
 }
