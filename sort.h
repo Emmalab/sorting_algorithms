@@ -1,9 +1,11 @@
-#ifndef SORT_H_
-#define SORT_H_
+#ifndef SORT_H
+#define SORT_H
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
+#include <stddef.h>
+#include <stdio.h>
 
 /**
  * struct listint_s - Doubly linked list node
@@ -14,32 +16,20 @@
  */
 typedef struct listint_s
 {
-	const int n;
-	struct listint_s *prev;
-	struct listint_s *next;
+    const int n;
+    struct listint_s *prev;
+    struct listint_s *next;
 } listint_t;
 
-int sorted(listint_t **);
-void _ssort(int *, int, int);
-void heap_sort(int *, size_t);
-void shell_sort(int *, size_t);
-void quick_sort(int *, size_t);
-void merge_sort(int *, size_t);
-void swap_nums(int *, int, int);
-void bubble_sort(int *, size_t);
-void counting_sort(int *, size_t);
-void counting_sort(int *, size_t);
-void _qsort(int *, int, int, int);
-void print_list(const listint_t *);
-void selection_sort(int *, size_t);
-void msort(int *, int, int, int *);
-void print_array(const int *, size_t);
-void cocktail_sort_list(listint_t **);
-void insertion_sort_list(listint_t **);
-void merge(int *, int, int, int, int *);
-void print_data(char *, int *, int, int);
-void swap_nodes(listint_t **, listint_t **);
-void recursion_heap(int *, int, size_t, int);
-void swap_till_end(listint_t **, listint_t **, size_t);
-
+void print_list(const listint_t *list);
+void print_array(const int *array, size_t size);
+void quick_sort(int *array, size_t size);
+void insertion_sort_list(listint_t **list);
+void selection_sort(int *array, size_t size);
+void bubble_sort(int *array, size_t size);
+void shell_sort(int *array, size_t size);
+void swap(int *a, int *b);
+listint_t *swap_at_beg(listint_t *node1, listint_t *node2);
+void swap_at_end(listint_t *node1, listint_t *node2);
+void swap_at_middle(listint_t *node1, listint_t *node2);
 #endif

@@ -1,36 +1,47 @@
 #include "sort.h"
 
 /**
- * selection_sort - sorting algorithm
- * @array: to be sorted
- * @size: of the array
- *
- * Return: nothong
+ * selection_sort - sorts an array of integers using the Selection sort algorithm
+ * @array: pointer to the array of integers
+ * @size: size of the array
+ * Return: void
  */
 void selection_sort(int *array, size_t size)
 {
-	size_t i, j, idx;
-	int temp, select, match = 0;
+	int *least = NULL, check_swap;
+	size_t i, j;
 
+	if (size <= 2)
+		return;
 	for (i = 0; i < size; i++)
 	{
-		select = array[i];
-		for (j = i; j < size; j++)
+		check_swap = 0;
+		least = &array[i];
+		for (j = i + 1; j < size; j++)
 		{
-			if (array[j] < select)
+			if (*least > array[j])
 			{
-				select = array[j];
-				idx = j;
-				match = 1;
+				least = &array[j];
+				check_swap = 1;
 			}
 		}
-		if (match == 1)
-		{
-			temp = array[i];
-			array[i] = select;
-			array[idx] = temp;
+		swap(least, &array[i]);
+		if (check_swap)
 			print_array(array, size);
-			match = 0;
-		}
 	}
+}
+
+/**
+ * swap - swaps two integers in an array
+ * @a: first integer
+ * @b: second integer
+ * Return: void
+ */
+
+void swap(int *a, int *b)
+{
+        int temp = *a;
+
+        *a = *b;
+        *b = temp;
 }

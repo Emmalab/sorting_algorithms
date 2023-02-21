@@ -1,82 +1,107 @@
 #include "sort.h"
 
 /**
- * insertion_sort_list - sorts a list by insertion algorithm
- * @list: to be sorted  (doubly linked)
- *
- * Return: nothing
+ * insertion_sort_list - sorts a doublt linked
+ * list using Insertion Sort algorithm
+ * @list: pointer to the list of integers to be sorted
+ * Return: void
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *temp = *list;
-	size_t size = 0;
+	listint_t *ptr, *curr;
 
-	if (*list || temp->next != NULL)
+	if (*list == NULL || (*list)->next == NULL || (*list)->next->next == NULL)
+		return;
+	ptr = *list;
+	curr = ptr->next;
+	while (1)
 	{
-		while (temp)
+		if (ptr->n > curr->n)
 		{
-			size += 1;
-			temp = temp->next;
-		}
-
-		temp = *list;
-		while (temp->next)
-		{
-			if (temp->next->n < temp->n)
-				swap_till_end(list, &temp->next, size);
+			if (ptr->prev == NULL)
+			{
+				printf("Beginning\n");
+				*list = swap_at_beg(ptr, curr);
+			}
+			else if (curr->next == NULL)
+			{
+				printf("End\n");
+				swap_at_end(ptr, curr);
+			}
 			else
-				temp = temp->next;
+			{
+				printf("Middle\n");
+				swap_at_middle(ptr, curr);
+			}
+			print_list(*list);
+			ptr = *list;
+			curr = ptr->next;
+		}
+		else
+		{
+			ptr = curr;
+			if (curr->next != NULL)
+				curr = curr->next;
+			else
+				break;
 		}
 	}
 }
 
 /**
- * swap_till_end - continously swaps nodes till the list is done
- * @list: list to modify
- * @element: to shift
- * @size: of the list
- *
- * Return: non
+ * swap_at_beg - swaps two nodes at the beginning of a linked list
+ * @node1: first node
+ * @node2: second node
+ * Return: void
  */
-void swap_till_end(listint_t **list, listint_t **element, size_t size)
+listint_t *swap_at_beg(listint_t *node1, listint_t *node2)
 {
-	listint_t *temp = *list, *ptr = *element, *one = NULL, *four = NULL;
+	listint_t *ptr;
 
-	while (temp)
-	{
-		if (temp->next == ptr)
-		{
-			if (temp->prev)
-			{
-				one = temp->prev;
-				one->next = ptr;
-				ptr->prev = one;
-			}
-			else
-			{
-				ptr->prev = NULL;
-				*list = ptr;
-			}
-			if (ptr->next)
-			{
-				four = ptr->next;
-				temp->next = four;
-				four->prev = temp;
-			}
-			else
-				temp->next = NULL;
+	ptr = node2->next;
+	ptr->prev = node1;
+	node1->next = ptr;
+	node2->next = node1;
+	node2->prev = NULL;
+	return (node2);
+}
 
-			ptr->next = temp;
-			temp->prev = ptr;
-			print_list(*list);
-			break;
-		}
-		temp = temp->next;
-	}
+/**
+ * swap_at_end - swaps two nodes at the end of a
+ * linked list
+ * @node1: first node
+ * @node2: second node
+ * Return: void
+ */
+void swap_at_end(listint_t *node1, listint_t *node2)
+{
+	listint_t *ptr;
 
-	if (ptr->prev)
-	{
-		if (ptr->n < ptr->prev->n)
-			swap_till_end(list, &ptr, size);
-	}
+	ptr = node1->prev;
+	ptr->next = node2;
+	node2->prev = ptr;
+	node2->next = node1;
+	node1->prev = node2;
+	node1->next = NULL;
+}
+
+/**
+ * swap_at_middle - swaps two nodes at the middle of a
+ * linked list
+ * @node1: first node
+ * @node2: second node
+ * Return: void
+ */
+void swap_at_middle(listint_t *node1, listint_t *node2)
+{
+	listint_t *back, *forw;
+
+	back = node1->prev;
+	forw = node2->next;
+	back->next = node2;
+	node2->prev = back;
+	node2->next = node1;
+	node1->prev = node2;
+	node1->next = forw;
+	forw->prev = node1;
 }

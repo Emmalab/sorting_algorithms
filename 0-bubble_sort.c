@@ -1,31 +1,47 @@
 #include "sort.h"
 
 /**
- * bubble_sort - sorting algorithm with constant sort time
- * @array: to be sorted
- * @size: of the array
- *
- * Return: nothing
+ * bubble_sort - sorts an array of integers using the Bubble sort algorithm
+ * @array: pointer to the unsorted array
+ * @size: size of the array
+ * Return: none(void)
  */
 void bubble_sort(int *array, size_t size)
 {
 	size_t i, j;
-	int temp;
+	int swapped;
 
-	if (array)
+	if (size <= 2 || array == NULL)
+		return;
+	for (i = 0; i < size; i++)
 	{
-		for (i = 0; i < size - 1; i++)
+		swapped = 0;
+		for (j = 0; j < size - 1; j++)
 		{
-			for (j = 0; j < size - i - 1; j++)
+			if (array[j] > array[j + 1])
 			{
-				if (array[j] > array[j + 1])
-				{
-					temp = array[j];
-					array[j] = array[j + 1];
-					array[j + 1] = temp;
-					print_array(array, size);
-				}
+				swap(&array[j], &array[j + 1]);
+				print_array(array, size);
+				swapped = 1;
 			}
+			else
+				continue;
+		if (swapped == 0)
+			return;
 		}
 	}
+}
+
+/**
+ * swap - swaps the position of two integers in an arrat
+ * @a: first node
+ * @b: second node
+ * Return: void
+ */
+void swap(int *a, int *b)
+{
+	int temp = *a;
+
+	*a = *b;
+	*b = temp;
 }
